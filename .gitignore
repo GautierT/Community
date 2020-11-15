@@ -16,3 +16,4 @@
 !/appveyor.yml
 !/community.yml
 /*.log
+.filerun*
