@@ -1,0 +1,35 @@
+#########################################################################
+# Title:            Community: CloudProxy                               #
+# Author(s):        Satz                                                #
+# URL:              https://github.com/Cloudbox/Community               #
+# Docker Image(s):  gautiert/cloudproxy                                 #
+# --                                                                    #
+#         Part of the Cloudbox project: https://cloudbox.works          #
+#########################################################################
+#                   GNU General Public License v3.0                     #
+#########################################################################
+---
+
+- name: Stop and remove any existing container
+  docker_container:
+    name: cloudproxy
+    state: absent
+
+- name: Create and start container
+  docker_container:
+    name: cloudproxy
+    image: "gautiert/cloudproxy"
+    pull: yes
+    ports:
+      - "8191:8191"
+    env:
+      TZ: "{{ tz }}"
+      UID: "{{ uid }}"
+      GID: "{{ gid }}"
+    networks:
+      - name: cloudbox
+        aliases:
+          - cloudproxy
+    purge_networks: yes
+    restart_policy: unless-stopped
+    state: started

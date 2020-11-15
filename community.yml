@@ -25,6 +25,7 @@
     - { role: btrfsmaintenance, tags: ['btrfsmaintenance'] }
     - { role: calibre, tags: ['calibre'] }
     - { role: calibre-web, tags: ['calibre-web'] }
+    - { role: cloudproxy, tags: ['cloudproxy'] }
     - { role: coder, tags: ['coder'] }
     - { role: comixed, tags: ['comixed'] }
     - { role: comicstreamer, tags: ['comicstreamer'] }

@@ -33,6 +33,7 @@ environment:
     btrfsmaintenance
     calibre
     calibre-web
+    cloudproxy
     comicstreamer
     couchpotato
     coder
