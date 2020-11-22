@@ -9,7 +9,6 @@
 #                   GNU General Public License v3.0                     #
 #########################################################################
 ---
-
 - name: Stop and remove any existing container
   docker_container:
     name: cloudproxy
@@ -18,14 +17,14 @@
 - name: Create and start container
   docker_container:
     name: cloudproxy
-    image: "gautiert/cloudproxy"
+    image: 'noahcardoza/cloudproxy:latest'
     pull: yes
     ports:
-      - "8191:8191"
+      - '8191:8191'
     env:
-      TZ: "{{ tz }}"
-      UID: "{{ uid }}"
-      GID: "{{ gid }}"
+      TZ: '{{ tz }}'
+      UID: '{{ uid }}'
+      GID: '{{ gid }}'
     networks:
       - name: cloudbox
         aliases:
