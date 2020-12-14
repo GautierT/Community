@@ -21,6 +21,17 @@
     name: ungit
     state: absent
 
+- name: Create htpasswd
+  htpasswd:
+    path: '/opt/nginx-proxy/htpasswd/{{ item }}.{{ user.domain }}'
+    name: '{{ user.name }}'
+    password: '{{ user.pass }}'
+    owner: '{{ user.name }}'
+    group: '{{ user.name }}'
+    mode: 0664
+  with_items:
+    - ungit
+
 - name: Create ungit directories
   file: 'path={{ item }} state=directory mode=0777 owner={{ user.name }} group={{ user.name }} recurse=yes'
   with_items:
