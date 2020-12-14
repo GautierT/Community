@@ -32,14 +32,14 @@
     name: filerun
     image: 'afian/filerun:latest'
     pull: yes
-    ports:
+    ports: # not sure about this
       - '8087:80'
     env:
       TZ: '{{ tz }}'
       UID: '{{ uid }}'
       GID: '{{ gid }}'
       VIRTUAL_HOST: 'filerun.{{ user.domain }}'
-      VIRTUAL_PORT: '3000'
+      VIRTUAL_PORT: '8087' # not sure about this
       LETSENCRYPT_HOST: 'filerun.{{ user.domain }}'
       LETSENCRYPT_EMAIL: '{{ user.email }}'
       logLevel: debug
@@ -57,7 +57,6 @@
       - '/opt/filerun:/var/www/html'
       - '/home:/user-files/home'
       - '/mnt:/user-files/mnt'
-      - '/opt:/user-files/opt'
       - '/srv:/user-files/srv'
     networks:
       - name: cloudbox
