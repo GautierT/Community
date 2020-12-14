@@ -1,0 +1,68 @@
+#########################################################################
+# Title:            Community: filerun                              #
+# Author(s):        gautiert                                            #
+# URL:              https://github.com/Cloudbox/Community               #
+# Docker Image(s):  filerun/chrome                                  #
+# --                                                                    #
+#         Part of the Cloudbox project: https://cloudbox.works          #
+#########################################################################
+#                   GNU General Public License v3.0                     #
+#########################################################################
+---
+- name: 'Set DNS Record on CloudFlare'
+  include_role:
+    name: cloudflare-dns
+  vars:
+    record: filerun
+  when: cloudflare_enabled
+
+- name: Stop and remove any existing container
+  docker_container:
+    name: filerun
+    state: absent
+
+- name: Create filerun directories
+  file: 'path={{ item }} state=directory mode=0777 owner={{ user.name }} group={{ user.name }} recurse=yes'
+  with_items:
+    - /opt/filerun/
+    - /tmp/filerun
+
+- name: Create and start container
+  docker_container:
+    name: filerun
+    image: 'afian/filerun:latest'
+    pull: yes
+    ports:
+      - '8087:80'
+    env:
+      TZ: '{{ tz }}'
+      UID: '{{ uid }}'
+      GID: '{{ gid }}'
+      VIRTUAL_HOST: 'filerun.{{ user.domain }}'
+      VIRTUAL_PORT: '3000'
+      LETSENCRYPT_HOST: 'filerun.{{ user.domain }}'
+      LETSENCRYPT_EMAIL: '{{ user.email }}'
+      logLevel: debug
+      FR_DB_HOST: 'mariadb'
+      FR_DB_PORT: '3306'
+      FR_DB_NAME: 'filerun'
+      FR_DB_USER: 'filerun'
+      FR_DB_PASS: 'filerun'
+      APACHE_RUN_USER: '{{ user.name }}'
+      APACHE_RUN_USER_ID: '{{ uid }}'
+      APACHE_RUN_GROUP: '{{ user.name }}'
+      APACHE_RUN_GROUP_ID: '{{ gid }}'
+    volumes:
+      - '/opt:/user-files/opt'
+      - '/opt/filerun:/var/www/html'
+      - '/home:/user-files/home'
+      - '/mnt:/user-files/mnt'
+      - '/opt:/user-files/opt'
+      - '/srv:/user-files/srv'
+    networks:
+      - name: cloudbox
+        aliases:
+          - filerun
+    purge_networks: yes
+    restart_policy: unless-stopped
+    state: started

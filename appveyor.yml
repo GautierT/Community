@@ -109,6 +109,8 @@ environment:
     wordpress
     xteve
     znc
+    ungit
+    filerun
 
 init:
   - sh: curl -s https://cloudbox.works/scripts/dep.sh | sudo -H sh &> /dev/null

@@ -1,0 +1,55 @@
+#########################################################################
+# Title:            Community: ungit                              #
+# Author(s):        gautiert                                            #
+# URL:              https://github.com/Cloudbox/Community               #
+# Docker Image(s):  ungit/chrome                                  #
+# --                                                                    #
+#         Part of the Cloudbox project: https://cloudbox.works          #
+#########################################################################
+#                   GNU General Public License v3.0                     #
+#########################################################################
+---
+- name: 'Set DNS Record on CloudFlare'
+  include_role:
+    name: cloudflare-dns
+  vars:
+    record: ungit
+  when: cloudflare_enabled
+
+- name: Stop and remove any existing container
+  docker_container:
+    name: ungit
+    state: absent
+
+- name: Create ungit directories
+  file: 'path={{ item }} state=directory mode=0777 owner={{ user.name }} group={{ user.name }} recurse=yes'
+  with_items:
+    - /opt/ungit/
+    - /tmp/ungit
+
+- name: Create and start container
+  docker_container:
+    name: ungit
+    image: 'gautiert/ungit:latest'
+    pull: yes
+    env:
+      TZ: '{{ tz }}'
+      UID: '{{ uid }}'
+      GID: '{{ gid }}'
+      VIRTUAL_HOST: 'ungit.{{ user.domain }}'
+      VIRTUAL_PORT: '8448'
+      LETSENCRYPT_HOST: 'ungit.{{ user.domain }}'
+      LETSENCRYPT_EMAIL: '{{ user.email }}'
+    volumes:
+      - '/opt/community:/home/seed/community:rw'
+      - '/home/seed/.gitconfig:/home/node/.gitconfig:rw'
+      - '/home/seed/.ssh:/home/node/.ssh:rw'
+      - '/srv/git/cloudbox:/srv/git/cloudbox:rw'
+      - '/opt/ungit/config:/ungit/conf:rw'
+    networks:
+      - name: cloudbox
+        aliases:
+          - ungit
+    purge_networks: yes
+    restart_policy: unless-stopped
+    state: started
