@@ -1,8 +1,8 @@
 #########################################################################
-# Title:            Community: CloudProxy                               #
+# Title:            Community: flaresolverr                             #
 # Author(s):        Satz                                                #
 # URL:              https://github.com/Cloudbox/Community               #
-# Docker Image(s):  gautiert/cloudproxy                                 #
+# Docker Image(s):  flaresolverr/flaresolverr                           #
 # --                                                                    #
 #         Part of the Cloudbox project: https://cloudbox.works          #
 #########################################################################
@@ -11,13 +11,13 @@
 ---
 - name: Stop and remove any existing container
   docker_container:
-    name: cloudproxy
+    name: flaresolverr
     state: absent
 
 - name: Create and start container
   docker_container:
-    name: cloudproxy
-    image: 'noahcardoza/cloudproxy:latest'
+    name: flaresolverr
+    image: 'flaresolverr/flaresolverr:latest'
     pull: yes
     ports:
       - '8191:8191'
@@ -25,10 +25,11 @@
       TZ: '{{ tz }}'
       UID: '{{ uid }}'
       GID: '{{ gid }}'
+      LOG_LEVEL: 'info'
     networks:
       - name: cloudbox
         aliases:
-          - cloudproxy
+          - flaresolverr
     purge_networks: yes
     restart_policy: unless-stopped
     state: started
