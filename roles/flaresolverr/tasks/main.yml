@@ -26,6 +26,7 @@
       UID: '{{ uid }}'
       GID: '{{ gid }}'
       LOG_LEVEL: 'info'
+      CAPTCHA_SOLVER: 'hcaptcha-solver'
     networks:
       - name: cloudbox
         aliases:
