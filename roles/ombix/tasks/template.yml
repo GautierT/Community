@@ -28,7 +28,7 @@
 - name: Create and start container
   docker_container:
     name: ombi{{ rolename }}
-    image: "hotio/ombi"
+    image: "hotio/ombi:{{ ombix.version }}"
     pull: yes
     env:
       BACKUP: "no"
